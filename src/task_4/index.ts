@@ -8,71 +8,81 @@
  * LogisticContract - перевозка металла, задержка 6000мс
  */
 import { Currency } from "../task_1";
-import { ISecureVaultRequisites } from "../task_3";
 
-export class SmartContract implements IContract{
+abstract class Contract implements IContract {
+  public id: number;
+  public state: ContractState = ContractState.pending;
+  public value: Currency;
+  public receiver: { id: number };
+  public sender: { id: number };
 
+  public signAndTransfer(): void {
+    this.state = ContractState.transfer;
+  }
+
+  public closeTransfer(): void {
+    this.state = ContractState.close;
+  }
+
+  public rejectTransfer(): void {
+    this.state = ContractState.rejected;
+  }
 }
 
-export class BankingContract implements IContract{
+export class SmartContract extends Contract {}
+export class BankingContract extends Contract {}
+export class LogisticContract extends Contract {}
 
+export interface IContract {
+  /**
+   * Уникальный номер контракта
+   */
+  id: number;
+  /**
+   * Текущее состояние контракта
+   */
+  state: ContractState;
+  /**
+   * Предмет контракта
+   */
+  value: Currency;
+  /**
+   * Реквизиты отправителя
+   */
+  sender: { id: number };
+  /**
+   * Реквизиты получателя
+   */
+  receiver: { id: number };
+  /**
+   * Начало исполнения контракта
+   */
+  signAndTransfer: () => void;
+  /**
+   * Успешное завершение контракта
+   */
+  closeTransfer: () => void;
+  /**
+   * Отмена исполнения контракта
+   */
+  rejectTransfer: () => void;
 }
 
-export class LogisticContract implements IContract{
-
-}
-
-
-export interface IContract{
-    /**
-     * Уникальный номер контракта
-     */
-    id: number,
-    /**
-     * Текущее состояние контракта
-     */
-    state: ContractState,
-    /**
-     * Предмет контракта
-     */
-    value: Currency,
-    /**
-     * Реквизиты отправителя
-     */
-    sender: ISecureVaultRequisites,
-    /**
-     * Реквизиты получателя
-     */
-    receiver: ISecureVaultRequisites,
-    /**
-     * Начало исполнения контракта
-     */
-    signAndTransfer: () => void,
-    /**
-     * Успешное завершение контракта
-     */
-    closeTransfer: () => void,
-    /**
-     * Отмена исполнения контракта
-     */
-    rejectTransfer: () => void
-}
-
-export enum ContractState{
-    /**
-     * Контракт находится в ожидании исполнения
-     */
-    pending,
-    /**
-     * Контракт находится в исполнении
-     */
-    transfer,
-    /**
-     * Контракт исполнен успешно
-     */
-    close,
-    /**
-     * Контракт отменен, либо отклонен
-     */
-    rejected
+export enum ContractState {
+  /**
+   * Контракт находится в ожидании исполнения
+   */
+  pending,
+  /**
+   * Контракт находится в исполнении
+   */
+  transfer,
+  /**
+   * Контракт исполнен успешно
+   */
+  close,
+  /**
+   * Контракт отменен, либо отклонен
+   */
+  rejected,
 }
