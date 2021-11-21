@@ -39,9 +39,13 @@ export class BankController {
         let sender: Vault;
         let receiver: Vault;
 
-        this._vaults.forEach(vault =>
-            vault.id === contract.sender.id ? sender = vault
-                : vault.id === contract.receiver.id ? receiver = vault : undefined);
+        this._vaults.forEach(vault =>{
+            if (vault.id === contract.sender.id){
+                sender = vault;
+        }else if(vault.id === contract.receiver.id){
+            receiver = vault;
+        }
+        });
 
         contract.signAndTransfer();
         try {

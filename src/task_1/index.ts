@@ -32,7 +32,7 @@ export class Currency{
 
   public set value(n: number) {
     if (n < 0) {
-      throw new Error();
+      throw new Error("Введенные данные неверны для названия валюты");
     }
 
     this._value = n
@@ -41,7 +41,7 @@ export class Currency{
   constructor(name: string, value: number, unit: string){
     if (name === '' || name === undefined || value < 0 
     || value === undefined || unit === undefined){
-      throw new Error();
+      throw new Error("Входные данные неверны для создания валюты");
     }
 
     this._name = name;
