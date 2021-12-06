@@ -15,6 +15,18 @@ abstract class Contract implements IContract {
   public value: Currency;
   public receiver: { id: number };
   public sender: { id: number };
+  private readonly _delay: number;
+
+  protected constructor(delay: number) {
+        if (delay < 0) {
+            throw Error("Не может быть меньше 0");
+        }
+        this._delay = delay;
+  }
+
+  public get delay() {
+        return this._delay;
+  }
 
   public signAndTransfer(): void {
     this.state = ContractState.transfer;
@@ -30,20 +42,23 @@ abstract class Contract implements IContract {
 }
 
 export class SmartContract extends Contract {
-    public closeTransfer() {
-        setTimeout(() => this.closeTransfer(), 3000);
-        super.closeTransfer();
+    constructor() {
+        super(3000);
     }
 }
-export class BankingContract extends Contract {}
+export class BankingContract extends Contract {
+      constructor() {
+        super(0);
+    }
+}
 export class LogisticContract extends Contract {
-    public closeTransfer() {
-        setTimeout(() => this.closeTransfer(), 6000);
-        super.closeTransfer();
+    constructor() {
+        super(6000);
     }
 }
 
 export interface IContract {
+  delay: number,
   /**
    * Уникальный номер контракта
    */
